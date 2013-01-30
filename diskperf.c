@@ -39,6 +39,7 @@
 static bool drop_caches = false;
 static size_t block_size = 4096;    // how many bytes to read at each read()
 static unsigned nb_blocks = 100;    // number of blocks to read from each devs
+static bool sequential = false;     // whether to read block sequentially rather than at random
 static bool noatime = false;
 static bool verbose = false;
 
@@ -96,9 +97,11 @@ static void do_time_dev(char const *fname)
 
     struct timeval start;
     gettimeofday(&start, NULL);
+#   define RANDOM_OFFSET() ((off_t)((rand() % (size - block_size)) / block_size) * (off_t)block_size)
+    off_t seq_pos = RANDOM_OFFSET(); // used only for sequential reads
     unsigned b;
-    for (b = 0; b < nb_blocks; b++) {
-        off_t pos = ((rand() % (size - block_size)) / block_size) * block_size;
+    for (b = 0; b < nb_blocks; b++, seq_pos += block_size) {
+        off_t pos = sequential ? seq_pos : RANDOM_OFFSET();
         if ((off_t)-1 == lseek(fd, pos, SEEK_SET)) {
             fprintf(stderr, "lseek(%s): %s\n", fname, strerror(errno));
             break;
@@ -147,7 +150,7 @@ int main(int nb_args, char **args)
             { NULL,         0,                 NULL, 0 }
         };
 
-        int c = getopt_long(nb_args, args, "hdvan:s:", long_options, &option_index);
+        int c = getopt_long(nb_args, args, "hdvaln:s:", long_options, &option_index);
         if (c == -1) break; // done
 
         switch (c) {
@@ -162,6 +165,9 @@ int main(int nb_args, char **args)
                 break;
             case 'a':
                 noatime = true;
+                break;
+            case 'l':
+                sequential = true;
                 break;
             case 'n':
                 nb_blocks = strtoull(optarg, NULL, 0);
