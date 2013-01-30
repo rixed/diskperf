@@ -97,10 +97,11 @@ static void do_time_dev(char const *fname)
 
     struct timeval start;
     gettimeofday(&start, NULL);
-#   define RANDOM_OFFSET() ((off_t)((rand() % (size - block_size)) / block_size) * (off_t)block_size)
+#   define WRAP_SIZE(o) ((off_t)((o) % (size - block_size)))
+#   define RANDOM_OFFSET() ((off_t)(WRAP_SIZE(rand()) / block_size) * (off_t)block_size)
     off_t seq_pos = RANDOM_OFFSET(); // used only for sequential reads
     unsigned b;
-    for (b = 0; b < nb_blocks; b++, seq_pos += block_size) {
+    for (b = 0; b < nb_blocks; b++, seq_pos = WRAP_SIZE(seq_pos + block_size)) {
         off_t pos = sequential ? seq_pos : RANDOM_OFFSET();
         if ((off_t)-1 == lseek(fd, pos, SEEK_SET)) {
             fprintf(stderr, "lseek(%s): %s\n", fname, strerror(errno));
@@ -114,7 +115,7 @@ static void do_time_dev(char const *fname)
         }
 
         if ((size_t)ret != block_size) {
-            fprintf(stderr, "read(%s): short read!?\n", fname);
+            fprintf(stderr, "read(%s): short read at %lld!?\n", fname, (long long)pos);
             break;
         }
     }
