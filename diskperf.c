@@ -44,7 +44,18 @@ static bool verbose = false;
 
 static void do_drop_caches(void)
 {
-    assert(!"TODO");
+    errno = 0;
+    int status = system("sysctl -q vm.drop_caches=1");
+
+    if (status == -1) {
+        fprintf(stderr, "system(sysctl): %s\n", errno ? strerror(errno) : "failed");
+        return;
+    }
+
+    if (WIFEXITED(status) && 0 != WEXITSTATUS(status)) {
+        fprintf(stderr, "sysctl: returned %d\n", WEXITSTATUS(status));
+        return;
+    }
 }
 
 static void do_time_dev(char const *fname)
