@@ -135,7 +135,19 @@ quit:
 
 static void usage(void)
 {
-    printf("diskperf [-h] [-d] [--nb-blocks|-n nb] [--block-size|-s size] dev...\n");
+    printf(
+        "diskperf [options...] dev...\n"
+        "  Display seek average latency of the given file(s) or block device(s)\n"
+        "\n"
+        "  options:\n"
+        "   -h, --help:         display this help\n"
+        "   -v, --verbose:      more verbose output\n"
+        "   -n, --nb-blocks N:  reads N blocks (default: 100)\n"
+        "   -s, --block-size S: read blocks of S bytes (default: 4096)\n"
+        "   -d, --drop-cache:   drop caches before performing the reads (but not during the reads)\n"
+        "   -l, --sequential:   reads sequentialy instead of at random\n"
+        "   -a, --noatime:      opens the file with NOATIME option\n"
+    );
 }
 
 int main(int nb_args, char **args)
@@ -145,6 +157,9 @@ int main(int nb_args, char **args)
         static struct option long_options[] = {
             { "help",       no_argument,       NULL, 'h' },
             { "drop-cache", no_argument,       NULL, 'd' },
+            { "verbose",    no_argument,       NULL, 'v' },
+            { "noatime",    no_argument,       NULL, 'a' },
+            { "sequential", no_argument,       NULL, 'l' },
             { "nb-blocks",  required_argument, NULL, 'n' },
             { "block-size", required_argument, NULL, 's' },
             { NULL,         0,                 NULL, 0 }
