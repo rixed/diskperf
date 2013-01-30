@@ -70,6 +70,7 @@ static void do_time_dev(char const *fname)
         fprintf(stderr, "open(%s): %s\n", fname, strerror(errno));
         return;
     }
+    (void)posix_fadvise(fd, 0, 0, POSIX_FADV_NOREUSE);  // best effort
 
     // Get file size
     off_t size;
