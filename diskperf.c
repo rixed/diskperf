@@ -132,7 +132,7 @@ quit:
 
 static void usage(void)
 {
-    printf("diskperf [-h] [-d] [--nb-blocks|-b nb] [--block-size|-s size] dev...\n");
+    printf("diskperf [-h] [-d] [--nb-blocks|-n nb] [--block-size|-s size] dev...\n");
 }
 
 int main(int nb_args, char **args)
