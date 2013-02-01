@@ -1,5 +1,5 @@
 INSTALL_PROGRAM = install
-PREFIX = /usr/local
+BINDIR = /usr/local/bin
 
 all: diskperf
 
@@ -9,4 +9,4 @@ clean:
 	rm -f *.o
 
 install: diskperf
-	$(INSTALL_PROGRAM) $< $(DESTDIR)$(PREFIX)/bin/$<
+	$(INSTALL_PROGRAM) $< $(DESTDIR)$(BINDIR)/$<
