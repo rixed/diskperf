@@ -124,10 +124,19 @@ static void do_time_dev(char const *fname)
 
     double res = (stop.tv_sec + stop.tv_usec/1000000.) - (start.tv_sec + start.tv_usec/1000000.);
 
-    if (verbose) {
-        printf("%u seeks in %f seconds: %g seconds/seeks\n", b, res, res/b);
+    if (sequential) {
+        size_t const sz = nb_blocks * block_size;
+        if (verbose) {
+            printf("%zu bytes read in %f seconds: %g bytes/seconds\n", sz, res, sz/res);
+        } else {
+            printf("%g\n", sz/res);
+        }
     } else {
-        printf("%g\n", res/b);
+        if (verbose) {
+            printf("%u seeks in %f seconds: %g seconds/seeks\n", b, res, res/b);
+        } else {
+            printf("%g\n", res/b);
+        }
     }
 quit:
     (void)close(fd);
