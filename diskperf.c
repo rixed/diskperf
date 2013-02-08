@@ -36,7 +36,7 @@
 
 static bool drop_caches = false;
 static size_t block_size = 4096;    // how many bytes to read at each read()
-static unsigned nb_blocks = 100;    // number of blocks to read from each devs
+static unsigned nb_blocks = 1000;    // number of blocks to read from each devs
 static bool sequential = false;     // whether to read block sequentially rather than at random
 static bool noatime = false;
 static bool verbose = false;
@@ -151,7 +151,7 @@ static void usage(void)
         "  options:\n"
         "   -h, --help:         display this help\n"
         "   -v, --verbose:      more verbose output\n"
-        "   -n, --nb-blocks N:  reads N blocks (default: 100)\n"
+        "   -n, --nb-blocks N:  reads N blocks (default: 1000)\n"
         "   -s, --block-size S: read blocks of S bytes (default: 4096)\n"
         "   -d, --drop-cache:   drop caches before performing the reads (but not during the reads)\n"
         "   -l, --sequential:   reads sequentialy instead of at random\n"
